@@ -36,7 +36,7 @@ const actions = {
     )
   },
   async matras ({ state, commit, rootState },params) {
-    return await crud.list(rootState.apiServer+"/"+state.model.name +"/"+params.regulator_id + "/matras?" + new URLSearchParams(params).toString()
+    return await crud.list(rootState.apiServer+"/"+state.model.name +"/"+params.book_id + "/matras?" + new URLSearchParams(params).toString()
     )
   },
   async read ({ state, commit, rootState },params) {

@@ -373,7 +373,7 @@ export default {
         title: props.record.title ,
         meaning: props.record.meaning ,
         active: 1 ,
-        regulator_id: route.params.id ,
+        book_id: route.params.id ,
         kunty_id: kunty.value > 0 ? kunty.value : 0 ,
         matika_id: matika.value > 0 ? matika.value : 0 ,
         chapter_id: chapter.value > 0 ? chapter.value : 0 ,

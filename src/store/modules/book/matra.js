@@ -28,7 +28,7 @@ const getters = {
 const actions = {
   async list ({ state, commit, rootState },params) {
     return await crud.list(rootState.apiServer+"/books/"+state.model.name + "?" + new URLSearchParams({
-        regulator_id: params.regulator_id ,
+        book_id: params.book_id ,
         kunty_id: params.kunty_id ,
         matika_id: params.matika_id ,
         chapter_id: params.chapter_id ,

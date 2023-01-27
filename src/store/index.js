@@ -29,7 +29,7 @@ export default createStore({
     user,
     task,
     /**
-     * Regulator Section
+     * Book Section
      */
     book,
     "bookType" : bookType ,

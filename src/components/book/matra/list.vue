@@ -115,15 +115,15 @@
     <div v-if="filterPanel" class="vcb-filter-panel">
       <div class="filter-container relative w-full px-4 pb-16 pt-12 ">
         <div class="filter-layer w-full flex flex-row mb-4">
-          <!-- Regulator filter -->
+          <!-- Book filter -->
           <n-select
-            v-model:value="selectedRegulator"
+            v-model:value="selectedBook"
             @update:value="regulatorChange"
             :loading="bookSelectLoading"
             clearable
             remote
             :clear-filter-after-select="false"
-            @search="handleSearchRegulator"  
+            @search="handleSearchBook"  
             filterable
             placeholder="សូមជ្រើសរើសលិខិតបទដ្ឋានគតិយុត្ត"
             :options="books"
@@ -341,7 +341,7 @@ export default {
       window.clearTimeout()
       table.loading = true
       store.dispatch('regulator/matras',{
-        regulator_id: route.params.id > 0 ? route.params.id : '' ,
+        book_id: route.params.id > 0 ? route.params.id : '' ,
         kunty_id: selectedKunty.value !== null ? selectedKunty.value : '' ,
         matika_id: selectedMatika.value !== null ? selectedMatika.value : '' ,
         chapter_id: selectedChapter.value !== null ? selectedChapter.value : '' ,
@@ -459,7 +459,7 @@ export default {
       id: 0 ,
       number : 0 ,
       meaning: '' ,
-      regulator_id: 0 ,
+      book_id: 0 ,
       kunty_id : 0 ,
       matika_id : 0 ,
       chapter_id : 0 ,
@@ -471,7 +471,7 @@ export default {
       editRecord.number = record.number 
       editRecord.title = record.title 
       editRecord.meaning = record.meaning 
-      editRecord.regulator_id = record.regulator_id 
+      editRecord.book_id = record.book_id 
       editRecord.kunty_id = record.kunty_id 
       editRecord.matika_id = record.matika_id 
       editRecord.chapter_id = record.chapter_id 
@@ -534,7 +534,7 @@ export default {
      * Load pivot data of this model
      */
     const books = ref([])
-    const selectedRegulator = ref(null)
+    const selectedBook = ref(null)
     const bookSelectLoading = ref(false)
     const regulatorTimeoutHelper = ref(null)
     
@@ -663,18 +663,18 @@ export default {
 
     }
 
-    function handleSearchRegulator(query){
+    function handleSearchBook(query){
       clearTimeout( regulatorTimeoutHelper.value )
       regulatorTimeoutHelper.value = setTimeout( () => {
         if (!query.length) {
           books.value = [];
           return;
         }
-        getRegulators(query)
+        getBooks(query)
       }, 1000 )
     }
 
-    function getRegulators(query){
+    function getBooks(query){
       books.value = []
       bookSelectLoading.value = true 
       store.dispatch('regulator/compact',{
@@ -692,7 +692,7 @@ export default {
               } 
             } 
           )
-          selectedRegulator.value = []
+          selectedBook.value = []
         }else{
           notify.error({
             title: 'អានលិខិតបទដ្ឋានគតិយុត្ត' ,
@@ -709,7 +709,7 @@ export default {
       bookSelectLoading.value = false
     }
 
-    function getRegulator(){
+    function getBook(){
       if( route.params.id != undefined && route.params.id > 0 ){
         store.dispatch('regulator/read',{
           id: route.params.id
@@ -805,7 +805,7 @@ export default {
         page: 1 ,
         perPage : 100 ,
         search : query ,
-        regulator_id: selectedRegulator.value
+        book_id: selectedBook.value
       }).then(res=>{
         if(res.data.ok){
           store.commit('kunty/setRecords',res.data.records)
@@ -887,7 +887,7 @@ export default {
         page: 1 ,
         perPage : 100 ,
         search : query ,
-        regulator_id: selectedRegulator.value ,
+        book_id: selectedBook.value ,
         kunty_id: selectedKunty.value
       }).then(res=>{
         if(res.data.ok){
@@ -967,7 +967,7 @@ export default {
         page: 1 ,
         perPage : 100 ,
         search : query ,
-        regulator_id: selectedRegulator.value ,
+        book_id: selectedBook.value ,
         kunty_id: selectedKunty.value ,
         matika_id: selectedMatika.value
       }).then(res=>{
@@ -1047,7 +1047,7 @@ export default {
         page: 1 ,
         perPage : 100 ,
         search : query ,
-        regulator_id: selectedRegulator.value ,
+        book_id: selectedBook.value ,
         kunty_id: selectedKunty.value ,
         matika_id: selectedMatika.value ,
         chapter_id: selectedChapter.value
@@ -1104,7 +1104,7 @@ export default {
         page: 1 ,
         perPage : 100 ,
         search : query ,
-        regulator_id: selectedRegulator.value ,
+        book_id: selectedBook.value ,
         kunty_id: selectedKunty.value ,
         matika_id: selectedMatika.value ,
         chapter_id: selectedChapter.value ,
@@ -1155,7 +1155,7 @@ export default {
      * Initial the data
      */
     getRecords()
-    getRegulator()
+    getBook()
 
 
     return {
@@ -1167,10 +1167,10 @@ export default {
       filterPanel ,
       regulatorTitle ,
       /**
-       * Regulator, Kunty, Matika, Chapter, Part, Section filter
+       * Book, Kunty, Matika, Chapter, Part, Section filter
        */
       books ,
-      selectedRegulator ,
+      selectedBook ,
       bookSelectLoading ,
       regulatorChange ,
 
@@ -1206,8 +1206,8 @@ export default {
        * Table
        */
       filterRecords ,
-      getRegulators ,
-      handleSearchRegulator ,
+      getBooks ,
+      handleSearchBook ,
       
       getKunties ,
       handleSearchKunty ,

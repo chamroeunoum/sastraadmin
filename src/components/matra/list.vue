@@ -68,10 +68,10 @@
             <n-icon size="22" class="cursor-pointer text-red-500" @click="destroy(record)" title="លុបគណនីនេះចោល" >
               <TrashOutline />
             </n-icon>
-            <n-icon size="22" :class="'cursor-pointer ' + (record.active == 1 ? ' text-green-500 ' : ' text-gray-500 ') " @click="activateRegulator(record)" :title="record.active == 1 ? 'គណនីនេះកំពុងបើកតំណើរការ' : 'គណនីនេះកំពុងត្រូវបានបិទមិនអាចប្រើប្រាស់បាន' " >
+            <n-icon size="22" :class="'cursor-pointer ' + (record.active == 1 ? ' text-green-500 ' : ' text-gray-500 ') " @click="activateBook(record)" :title="record.active == 1 ? 'គណនីនេះកំពុងបើកតំណើរការ' : 'គណនីនេះកំពុងត្រូវបានបិទមិនអាចប្រើប្រាស់បាន' " >
               <IosCheckmarkCircleOutline />
             </n-icon>
-            <!-- <n-icon size="30" :class="'cursor-pointer ' + (record.pdf == 1 ? ' text-green-500 ' : ' text-gray-500 ') " @click="activateRegulator(record)" :title="record.active == 1 ? 'គណនីនេះកំពុងបើកតំណើរការ' : 'គណនីនេះកំពុងត្រូវបានបិទមិនអាចប្រើប្រាស់បាន' " >
+            <!-- <n-icon size="30" :class="'cursor-pointer ' + (record.pdf == 1 ? ' text-green-500 ' : ' text-gray-500 ') " @click="activateBook(record)" :title="record.active == 1 ? 'គណនីនេះកំពុងបើកតំណើរការ' : 'គណនីនេះកំពុងត្រូវបានបិទមិនអាចប្រើប្រាស់បាន' " >
               <DocumentPdf24Regular />
             </n-icon> -->
           </td>
@@ -113,15 +113,15 @@
     <div v-if="filterPanel" class="vcb-filter-panel">
       <div class="filter-container relative w-full px-4 pb-16 pt-12 ">
         <div class="filter-layer w-full flex flex-row mb-4">
-          <!-- Regulator filter -->
+          <!-- Book filter -->
           <n-select
-            v-model:value="selectedRegulator"
+            v-model:value="selectedBook"
             @update:value="regulatorChange"
             :loading="regulatorSelectLoading"
             clearable
             remote
             :clear-filter-after-select="false"
-            @search="handleSearchRegulator"  
+            @search="handleSearchBook"  
             filterable
             placeholder="សូមជ្រើសរើសលិខិតបទដ្ឋានគតិយុត្ត"
             :options="regulators"
@@ -339,7 +339,7 @@ export default {
       window.clearTimeout()
       table.loading = true
       store.dispatch(model.name+'/list',{
-        regulator_id: selectedRegulator.value !== null ? selectedRegulator.value : ( route.params.id > 0 ? route.params.id : '' ) ,
+        book_id: selectedBook.value !== null ? selectedBook.value : ( route.params.id > 0 ? route.params.id : '' ) ,
         kunty_id: selectedKunty.value !== null ? selectedKunty.value : '' ,
         matika_id: selectedMatika.value !== null ? selectedMatika.value : '' ,
         chapter_id: selectedChapter.value !== null ? selectedChapter.value : '' ,
@@ -403,7 +403,7 @@ export default {
       return table.pagination.totalPages ? table.pagination.totalPages : 0
     })
 
-    function activateRegulator(record){
+    function activateBook(record){
       dialog.warning({
         title: "បិទ ឬ បើក ឯកសារ" ,
         content: "តើអ្នកចង់ " + ( record.active == 1 ? "បិទ" : "បើក" )+ " ឯកសារនេះមែនទេ ?" ,
@@ -514,7 +514,7 @@ export default {
      * Load pivot data of this model
      */
     const regulators = ref([])
-    const selectedRegulator = ref(null)
+    const selectedBook = ref(null)
     const regulatorSelectLoading = ref(false)
     const regulatorTimeoutHelper = ref(null)
     
@@ -643,18 +643,18 @@ export default {
 
     }
 
-    function handleSearchRegulator(query){
+    function handleSearchBook(query){
       clearTimeout( regulatorTimeoutHelper.value )
       regulatorTimeoutHelper.value = setTimeout( () => {
         if (!query.length) {
           regulators.value = [];
           return;
         }
-        getRegulators(query)
+        getBooks(query)
       }, 1000 )
     }
 
-    function getRegulators(query){
+    function getBooks(query){
       regulators.value = []
       regulatorSelectLoading.value = true 
       store.dispatch('regulator/compact',{
@@ -672,7 +672,7 @@ export default {
               } 
             } 
           )
-          selectedRegulator.value = []
+          selectedBook.value = []
         }else{
           notify.error({
             title: 'អានលិខិតបទដ្ឋានគតិយុត្ត' ,
@@ -689,7 +689,7 @@ export default {
       regulatorSelectLoading.value = false
     }
 
-    function getRegulator(){
+    function getBook(){
       if( route.params.id != undefined && route.params.id > 0 ){
         store.dispatch('regulator/read',{
           id: route.params.id
@@ -784,7 +784,7 @@ export default {
         page: 1 ,
         perPage : 100 ,
         search : query ,
-        regulator_id: selectedRegulator.value
+        book_id: selectedBook.value
       }).then(res=>{
         if(res.data.ok){
           store.commit('kunty/setRecords',res.data.records)
@@ -866,7 +866,7 @@ export default {
         page: 1 ,
         perPage : 100 ,
         search : query ,
-        regulator_id: selectedRegulator.value ,
+        book_id: selectedBook.value ,
         kunty_id: selectedKunty.value
       }).then(res=>{
         if(res.data.ok){
@@ -946,7 +946,7 @@ export default {
         page: 1 ,
         perPage : 100 ,
         search : query ,
-        regulator_id: selectedRegulator.value ,
+        book_id: selectedBook.value ,
         kunty_id: selectedKunty.value ,
         matika_id: selectedMatika.value
       }).then(res=>{
@@ -1026,7 +1026,7 @@ export default {
         page: 1 ,
         perPage : 100 ,
         search : query ,
-        regulator_id: selectedRegulator.value ,
+        book_id: selectedBook.value ,
         kunty_id: selectedKunty.value ,
         matika_id: selectedMatika.value ,
         chapter_id: selectedChapter.value
@@ -1083,7 +1083,7 @@ export default {
         page: 1 ,
         perPage : 100 ,
         search : query ,
-        regulator_id: selectedRegulator.value ,
+        book_id: selectedBook.value ,
         kunty_id: selectedKunty.value ,
         matika_id: selectedMatika.value ,
         chapter_id: selectedChapter.value ,
@@ -1120,7 +1120,7 @@ export default {
      * Initial the data
      */
     getRecords()
-    getRegulator()
+    getBook()
 
 
     return {
@@ -1131,10 +1131,10 @@ export default {
       table ,
       filterPanel ,
       /**
-       * Regulator, Kunty, Matika, Chapter, Part, Section filter
+       * Book, Kunty, Matika, Chapter, Part, Section filter
        */
       regulators ,
-      selectedRegulator ,
+      selectedBook ,
       regulatorSelectLoading ,
       regulatorChange ,
 
@@ -1170,8 +1170,8 @@ export default {
        * Table
        */
       filterRecords ,
-      getRegulators ,
-      handleSearchRegulator ,
+      getBooks ,
+      handleSearchBook ,
       
       getKunties ,
       handleSearchKunty ,
@@ -1215,7 +1215,7 @@ export default {
       /**
        * Functions
        */
-      activateRegulator ,
+      activateBook ,
       destroy
     }
   }
