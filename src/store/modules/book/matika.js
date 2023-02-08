@@ -32,7 +32,7 @@ const actions = {
         search: params.search ,
         perPage: params.perPage ,
         page: params.page ,
-        regulator_id: params.regulator_id ,
+        book_id: params.book_id ,
         kunty_id: params.kunty_id
       }).toString()
     )
@@ -45,7 +45,7 @@ const actions = {
       page: params.page ,
       perPage : params.perPage ,
       search: params.search ,
-      regulator_id: params.regulator_id ,
+      book_id: params.book_id ,
       kunty_id: params.kunty_id
     }).toString(): ""))
   },

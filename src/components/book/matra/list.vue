@@ -185,7 +185,7 @@
             clearable
             remote
             :clear-filter-after-select="false"
-            @search="handleSearchRegulator"  
+            @search="handleSearchBook"  
             filterable
             placeholder="សូមជ្រើសរើសលិខិតបទដ្ឋានគតិយុត្ត"
             :options="books"
@@ -591,7 +591,7 @@ export default {
      * Load pivot data of this model
      */
     const books = ref([])
-    const selectedRegulator = ref(null)
+    const selectedBook = ref(null)
     const bookSelectLoading = ref(false)
     const regulatorTimeoutHelper = ref(null)
     
@@ -737,7 +737,7 @@ export default {
 
     }
 
-    function handleSearchRegulator(query){
+    function handleSearchBook(query){
       clearTimeout( regulatorTimeoutHelper.value )
       regulatorTimeoutHelper.value = setTimeout( () => {
         if (!query.length) {
@@ -767,7 +767,7 @@ export default {
               } 
             } 
           )
-          selectedRegulator.value = []
+          selectedBook.value = []
         }else{
           notify.error({
             title: 'អានលិខិតបទដ្ឋានគតិយុត្ត' ,
@@ -856,7 +856,7 @@ export default {
         page: 1 ,
         perPage : 100 ,
         search : query ,
-        regulator_id: selectedRegulator.value
+        book_id: selectedBook.value
       }).then(res=>{
         if(res.data.ok){
           store.commit('kunty/setRecords',res.data.records)
@@ -938,7 +938,7 @@ export default {
         page: 1 ,
         perPage : 100 ,
         search : query ,
-        regulator_id: selectedRegulator.value ,
+        book_id: selectedBook.value ,
         kunty_id: selectedKunty.value
       }).then(res=>{
         if(res.data.ok){
@@ -1018,7 +1018,7 @@ export default {
         page: 1 ,
         perPage : 100 ,
         search : query ,
-        regulator_id: selectedRegulator.value ,
+        book_id: selectedBook.value ,
         kunty_id: selectedKunty.value ,
         matika_id: selectedMatika.value
       }).then(res=>{
@@ -1098,7 +1098,7 @@ export default {
         page: 1 ,
         perPage : 100 ,
         search : query ,
-        regulator_id: selectedRegulator.value ,
+        book_id: selectedBook.value ,
         kunty_id: selectedKunty.value ,
         matika_id: selectedMatika.value ,
         chapter_id: selectedChapter.value
@@ -1155,7 +1155,7 @@ export default {
         page: 1 ,
         perPage : 100 ,
         search : query ,
-        regulator_id: selectedRegulator.value ,
+        book_id: selectedBook.value ,
         kunty_id: selectedKunty.value ,
         matika_id: selectedMatika.value ,
         chapter_id: selectedChapter.value ,
@@ -1241,10 +1241,10 @@ export default {
       filterPanel ,
       regulatorTitle ,
       /**
-       * Regulator, Kunty, Matika, Chapter, Part, Section filter
+       * Book, Kunty, Matika, Chapter, Part, Section filter
        */
       books ,
-      selectedRegulator ,
+      selectedBook ,
       bookSelectLoading ,
       bookChange ,
 

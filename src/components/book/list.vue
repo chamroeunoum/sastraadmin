@@ -62,7 +62,7 @@
             <n-icon size="22" class="cursor-pointer text-red-500" @click="destroy(record)" title="លុប" >
               <TrashOutline />
             </n-icon>
-            <n-icon size="22" :class="'cursor-pointer ' + (record.active == 1 ? ' text-green-600 ' : ' text-gray-500 ') " @click="activateRegulator(record)" :title="record.active == 1 ? 'កំពុងដំណើរការ' : 'បានបិទដំណើរការ' " >
+            <n-icon size="22" :class="'cursor-pointer ' + (record.active == 1 ? ' text-green-600 ' : ' text-gray-500 ') " @click="activateBook(record)" :title="record.active == 1 ? 'កំពុងដំណើរការ' : 'បានបិទដំណើរការ' " >
               <IosCheckmarkCircleOutline />
             </n-icon>
             <n-icon size="22" :class="'cursor-pointer ' + (record.pdf == 1 ? ' text-green-500 ' : ' text-gray-500 ') " >
@@ -137,7 +137,7 @@ import { Edit20Regular, Key16Regular, Save20Regular, Add20Regular, Search20Regul
 import CreateForm from './create.vue'
 import UpdateForm from './update.vue'
 export default {
-  name: "Regulator" ,
+  name: "Book" ,
   components: {
     QrcodeVue ,
     Vue3Barcode,
@@ -298,7 +298,7 @@ export default {
       return table.pagination.totalPages ? table.pagination.totalPages : 0
     })
 
-    function activateRegulator(record){
+    function activateBook(record){
       dialog.warning({
         title: "បិទ ឬ បើក ឯកសារ" ,
         content: "តើអ្នកចង់ " + ( record.active == 1 ? "បិទ" : "បើក" )+ " ឯកសារនេះមែនទេ ?" ,
@@ -480,7 +480,7 @@ export default {
       /**
        * Functions
        */
-      activateRegulator ,
+      activateBook ,
       destroy ,
       applyTagMark
     }
