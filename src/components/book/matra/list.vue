@@ -13,15 +13,70 @@
       </div>
       <!-- Actions button of the crud -->
       <div class="flex w-96 action-buttons flex-row-reverse">
-        <!-- New Button -->
+        <!-- New Matra -->
         <div class="mt-1 ml-2">
-          <n-button type="success" @click="showCreateModal()" >
+          <n-button type="success" @click="goToCreateMatra()" >
             <template #icon>
               <n-icon>
                 <Add20Regular />
               </n-icon>
             </template>
-            បន្ថែម
+            មាត្រា
+          </n-button>
+        </div>
+        <!-- New Matra -->
+        <div class="mt-1 ml-2">
+          <n-button type="success" @click="goToCreateSection()" >
+            <template #icon>
+              <n-icon>
+                <Add20Regular />
+              </n-icon>
+            </template>
+            កថាភាគ
+          </n-button>
+        </div>
+        <!-- New Matra -->
+        <div class="mt-1 ml-2">
+          <n-button type="success" @click="goToCreatePart()" >
+            <template #icon>
+              <n-icon>
+                <Add20Regular />
+              </n-icon>
+            </template>
+            ផ្នែក
+          </n-button>
+        </div>
+        <!-- New Matra -->
+        <div class="mt-1 ml-2">
+          <n-button type="success" @click="goToCreateChapter()" >
+            <template #icon>
+              <n-icon>
+                <Add20Regular />
+              </n-icon>
+            </template>
+            ជំពូក
+          </n-button>
+        </div>
+        <!-- New Matra -->
+        <div class="mt-1 ml-2">
+          <n-button type="success" @click="goToCreateMatika()" >
+            <template #icon>
+              <n-icon>
+                <Add20Regular />
+              </n-icon>
+            </template>
+            មាតិកា
+          </n-button>
+        </div>
+        <!-- New Matra -->
+        <div class="mt-1 ml-2">
+          <n-button type="success" @click="goToCreateKunty()" >
+            <template #icon>
+              <n-icon>
+                <Add20Regular />
+              </n-icon>
+            </template>
+            គន្ថី
           </n-button>
         </div>
         <div class="w-4/5 relative" >
@@ -57,7 +112,14 @@
         <tr v-for="(record, index) in table.records.matched" :key='index' class="vcb-table-row" >
           <td class="vcb-table-cell font-bold" >{{ index + 1 }}</td>
           <td class="vcb-table-cell" >{{ record.number }}</td>
-          <td class="vcb-table-cell" ><div v-html="applyTagMark(record.title)"></div></td>
+          <td class="vcb-table-cell" >
+              <n-popover style="width: 90%" trigger="click">
+                <template #trigger>
+                  <div v-html="applyTagMark(record.title)"></div>
+                </template>
+                <div class="leading-10" v-html="applyTagMark(record.meaning)"></div>
+              </n-popover>
+          </td>
           <td  class="vcb-table-cell" >{{ record.kunty != undefined && record.kunty !== null ? record.kunty.title : "" }}</td>
           <td  class="vcb-table-cell" >{{ record.matika != undefined && record.matika !== null ? record.matika.title : "" }}</td>
           <td  class="vcb-table-cell" >{{ record.chapter != undefined && record.chapter !== null ? record.chapter.title : "" }}</td>
@@ -115,10 +177,10 @@
     <div v-if="filterPanel" class="vcb-filter-panel">
       <div class="filter-container relative w-full px-4 pb-16 pt-12 ">
         <div class="filter-layer w-full flex flex-row mb-4">
-          <!-- Regulator filter -->
+          <!-- Book filter -->
           <n-select
             v-model:value="selectedRegulator"
-            @update:value="regulatorChange"
+            @update:value="bookChange"
             :loading="bookSelectLoading"
             clearable
             remote
@@ -129,7 +191,7 @@
             :options="books"
             class="basis-1/3 px-2" 
           />
-          <!-- End regulator filter -->
+          <!-- End Book filter -->
           <!-- Kunty filter -->
           <n-select
             v-if="toggleKunty"
@@ -218,9 +280,9 @@
       </div>
     </div>
     <!-- Form create account -->
-    <create-form v-bind:model="model" v-bind:show="createModal.show" :onClose="closeCreateModal"/>
+    <!-- <create-form v-bind:model="model" v-bind:bookId="bookId" v-bind:show="createModal.show" :onClose="closeCreateModal"/> -->
     <!-- Form update account -->
-    <update-form v-bind:model="model" v-bind:record="editRecord" v-bind:show="editModal.show" :onClose="closeEditModal"/>
+    <!-- <update-form v-bind:model="model" v-bind:record="editRecord"  v-bind:bookId="bookId" v-bind:show="editModal.show" :onClose="closeEditModal"/> -->
   </div>
 </template>
 <script>
@@ -268,6 +330,9 @@ export default {
     const message = useMessage()
     const notify = useNotification()
     const route = useRoute()
+    const router = useRouter()
+    const bookId = parseInt( route.params.id ) > 0 ? ref(parseInt( route.params.id )) : ref(0)
+
     /**
      * Variables
      */    
@@ -340,8 +405,8 @@ export default {
        */
       window.clearTimeout()
       table.loading = true
-      store.dispatch('regulator/matras',{
-        regulator_id: route.params.id > 0 ? route.params.id : '' ,
+      store.dispatch('book/matras',{
+        book_id: bookId.value ,
         kunty_id: selectedKunty.value !== null ? selectedKunty.value : '' ,
         matika_id: selectedMatika.value !== null ? selectedMatika.value : '' ,
         chapter_id: selectedChapter.value !== null ? selectedChapter.value : '' ,
@@ -459,7 +524,7 @@ export default {
       id: 0 ,
       number : 0 ,
       meaning: '' ,
-      regulator_id: 0 ,
+      book_id: 0 ,
       kunty_id : 0 ,
       matika_id : 0 ,
       chapter_id : 0 ,
@@ -471,13 +536,13 @@ export default {
       editRecord.number = record.number 
       editRecord.title = record.title 
       editRecord.meaning = record.meaning 
-      editRecord.regulator_id = record.regulator_id 
+      editRecord.book_id = record.book_id 
       editRecord.kunty_id = record.kunty_id 
       editRecord.matika_id = record.matika_id 
       editRecord.chapter_id = record.chapter_id 
       editRecord.part_id = record.part_id 
       editRecord.section_id = record.section_id 
-      editRecord['regulator'] = record.regulator
+      editRecord['book'] = record.book
       editRecord['kunty'] = record.kunty
       editRecord['matika'] = record.matika
       editRecord['chapter'] = record.chapter
@@ -489,14 +554,6 @@ export default {
     function closeEditModal(record){
       editModal.show = false
       getRecords()
-    }
-    function inputPassword(record){
-      changePasswordModal.account = record
-      changePasswordModal.form = {
-        id: record.id ,
-        password: record.password
-      }
-      changePasswordModal.show = true
     }
 
     function destroy(record){
@@ -538,7 +595,7 @@ export default {
     const bookSelectLoading = ref(false)
     const regulatorTimeoutHelper = ref(null)
     
-    function regulatorChange(val){
+    function bookChange(val){
       kunties.value = []
       selectedKunty.value = null
       matikas.value = []
@@ -549,19 +606,20 @@ export default {
       selectedPart.value = null
       sections.value = [] 
       selectedSection.value = null
-      getRecords()
       if( !(val > 0) ) return ;
-      store.dispatch('regulator/kunty',{id : val }).then( res =>{
+      bookId.value = val
+      getRecords()
+      store.dispatch('book/kunty',{id : val }).then( res =>{
         /**
          * Apply the kunty, matika to the dropdownlist
          */
         if( res.data.ok ){
-          if( Array.isArray( res.data.record.kunties ) && res.data.record.kunties.length > 0 ){
-            kunties.value = res.data.record.kunties.map( record => { return { label: record.number + "៖ " + record.title , value: record.id } } )
+          if( Array.isArray( res.data.records ) && res.data.records.length > 0 ){
+            kunties.value = res.data.records.map( record => { return { label: record.number + "៖ " + record.title , value: record.id } } )
           }else{
-            store.dispatch('regulator/matika',{id:val}).then(res => {
-              if( Array.isArray( res.data.record.matikas ) && res.data.record.matikas.length > 0 ){
-                matikas.value = res.data.record.matikas.map( record => { return { label: record.number + "៖ " + record.title , value: record.id } } )
+            store.dispatch('kunty/matika',{id:val}).then(res => {
+              if( Array.isArray( res.data.records ) && res.data.records.length > 0 ){
+                matikas.value = res.data.records.map( record => { return { label: record.number + "៖ " + record.title , value: record.id } } )
               }
             }).catch( err => {
               console.log( err )
@@ -572,12 +630,28 @@ export default {
               })
             })
           }
+        }else{
+          /** 
+           * Try to retrive matikas in case the book does not has kunty
+           */
+           store.dispatch('book/matika',{id:val}).then(res => {
+              if( Array.isArray( res.data.records ) && res.data.records.length > 0 ){
+                matikas.value = res.data.records.map( record => { return { label: record.number + "៖ " + record.title , value: record.id } } )
+              }
+            }).catch( err => {
+              console.log( err )
+              notify.error({
+                title: "អានមាតិកានៃគន្ថី" ,
+                description: "មានបញ្ហាពេលអានមាតិកានៃគន្ថី" ,
+                duration: 3000
+              })
+            })
         }
       }).catch( err => {
         console.log( err )
-        notify.error({
+        notify.info({
           title: "អានគន្ថី" ,
-          description: "មានបញ្ហាពេលអានគន្ថី" ,
+          description: "មានបញ្ហាពេលអានគន្ថី។" ,
           duration: 3000
         })
       })
@@ -670,24 +744,25 @@ export default {
           books.value = [];
           return;
         }
-        getRegulators(query)
+        getBooks(query)
       }, 1000 )
     }
 
-    function getRegulators(query){
+    function getBooks(query){
       books.value = []
       bookSelectLoading.value = true 
-      store.dispatch('regulator/compact',{
+      store.dispatch('book/compact',{
         page: 1 ,
         perPage : 100 ,
-        search : query
+        search : query == undefined || query == "" ? "" : query
       }).then(res=>{
         if(res.data.ok){
-          store.commit('regulator/setRecords',res.data.records)
+          store.commit('book/setRecords',res.data.records)
+          store.commit('book/setRecord',res.data.records.find( book => book.id == bookId.value ) )
           books.value = res.data.records.map( 
             record => { 
               return {
-                label: record.objective , 
+                label: record.title , 
                 value: record.id
               } 
             } 
@@ -708,33 +783,9 @@ export default {
       })
       bookSelectLoading.value = false
     }
-
-    function getRegulator(){
-      if( route.params.id != undefined && route.params.id > 0 ){
-        store.dispatch('regulator/read',{
-          id: route.params.id
-        }).then(res=>{
-          if(res.data.ok){
-            store.commit('regulator/setRecord',res.data.record)
-          }else{
-            notify.error({
-              title: 'អានលិខិតបទដ្ឋានគតិយុត្ត' ,
-              description: 'មានបញ្ហាក្នុងពេលអានលិខិតបទដ្ឋានគតិយុត្ត។'
-            })
-          }
-        }).catch(err =>{
-          notify.error({
-            title: 'អានលិខិតបទដ្ឋានគតិយុត្ត' ,
-            description: 'មានបញ្ហាក្នុងពេលអានលិខិតបទដ្ឋានគតិយុត្ត។'
-          })
-          console.log( err )
-        })
-      }
-    }
     
     const regulatorTitle = computed( () => {
-      console.log( store.getters['regulator/getRecord'] )
-      return store.getters['regulator/getRecord'] !== null && store.getters['regulator/getRecord'] !== undefined && store.getters['regulator/getRecord'].id > 0 ? store.getters['regulator/getRecord'].title : ''
+      return store.getters['book/getRecord'] !== null && store.getters['book/getRecord'] !== undefined && store.getters['book/getRecord'].id > 0 ? store.getters['book/getRecord'].title : ''
     })
 
     /**
@@ -763,12 +814,12 @@ export default {
          * Apply the kunty, matika to the dropdownlist
          */
         if( res.data.ok ){
-          if( Array.isArray( res.data.record.matikas ) && res.data.record.matikas.length > 0 ){
-            matikas.value = res.data.record.matikas.map( record => { return { label: record.number + "៖ " + record.title , value: record.id } } )
+          if( Array.isArray( res.data.records ) && res.data.records.length > 0 ){
+            matikas.value = res.data.records.map( record => { return { label: record.number + "៖ " + record.title , value: record.id } } )
           }else{
             store.dispatch('kunty/chapter',{id:val}).then(res => {
-              if( Array.isArray( res.data.record.chapters ) && res.data.record.chapters.length > 0 ){
-                chapters.value = res.data.record.chapters.map( record => { return { label: record.number + "៖ " + record.title , value: record.id } } )
+              if( Array.isArray( res.data.records ) && res.data.records.length > 0 ){
+                chapters.value = res.data.records.map( record => { return { label: record.number + "៖ " + record.title , value: record.id } } )
               }
             }).catch( err => {
               console.log( err )
@@ -858,8 +909,8 @@ export default {
          * Apply the kunty, matika to the dropdownlist
          */
         if( res.data.ok ){
-          if( Array.isArray( res.data.record.chapters ) && res.data.record.chapters.length > 0 ){
-            chapters.value = res.data.record.chapters.map( record => { return { label: record.number + "៖ " + record.title , value: record.id } } )
+          if( Array.isArray( res.data.records ) && res.data.records.length > 0 ){
+            chapters.value = res.data.records.map( record => { return { label: record.number + "៖ " + record.title , value: record.id } } )
           }
         }
       }).catch( err => {
@@ -939,8 +990,8 @@ export default {
          * Apply the kunty, matika to the dropdownlist
          */
         if( res.data.ok ){
-          if( Array.isArray( res.data.record.parts ) && res.data.record.parts.length > 0 ){
-            parts.value = res.data.record.parts.map( record => { return { label: record.number + "៖ " + record.title , value: record.id } } )
+          if( Array.isArray( res.data.records ) && res.data.records.length > 0 ){
+            parts.value = res.data.records.map( record => { return { label: record.number + "៖ " + record.title , value: record.id } } )
           }
         }
       }).catch( err => {
@@ -1018,8 +1069,8 @@ export default {
          * Apply the kunty, matika to the dropdownlist
          */
         if( res.data.ok ){
-          if( Array.isArray( res.data.record.sections ) && res.data.record.sections.length > 0 ){
-            sections.value = res.data.record.sections.map( record => { return { label: record.number + "៖ " + record.title , value: record.id } } )
+          if( Array.isArray( res.data.records ) && res.data.records.length > 0 ){
+            sections.value = res.data.records.map( record => { return { label: record.number + "៖ " + record.title , value: record.id } } )
           }
         }
       }).catch( err => {
@@ -1152,16 +1203,39 @@ export default {
     }
 
     /**
+     * Redirect to create page
+     */
+    function goToCreateMatra(){
+      router.push('/book/'+bookId.value+'/matra/create')
+    }
+    function goToCreateSection(){
+      router.push('/book/'+bookId.value+'/matra/createSection')
+    }
+    function goToCreatePart(){
+      router.push('/book/'+bookId.value+'/matra/createPart')
+    }
+    function goToCreateChapter(){
+      router.push('/book/'+bookId.value+'/matra/createChapter')
+    }
+    function goToCreateMatika(){
+      router.push('/book/'+bookId.value+'/matra/createMatika')
+    }
+    function goToCreateKunty(){
+      router.push('/book/'+bookId.value+'/matra/createKunty')
+    }
+
+    /**
      * Initial the data
      */
-    getRecords()
-    getRegulator()
+    getBooks()
+    bookChange( bookId.value )
 
 
     return {
       /**
        * Variables
        */
+      bookId, 
       model ,
       table ,
       filterPanel ,
@@ -1172,7 +1246,7 @@ export default {
       books ,
       selectedRegulator ,
       bookSelectLoading ,
-      regulatorChange ,
+      bookChange ,
 
       kunties ,
       toggleKunty ,
@@ -1206,7 +1280,7 @@ export default {
        * Table
        */
       filterRecords ,
-      getRegulators ,
+      getBooks ,
       handleSearchRegulator ,
       
       getKunties ,
@@ -1255,7 +1329,13 @@ export default {
        */
       activateRecord ,
       destroy ,
-      applyTagMark
+      applyTagMark ,
+      goToCreateMatra ,
+      goToCreateSection ,
+      goToCreatePart ,
+      goToCreateChapter ,
+      goToCreateMatika ,
+      goToCreateKunty
     }
   }
 }
@@ -1264,7 +1344,7 @@ export default {
 
 <style scoped>
   .vcb-table-panel {
-    @apply absolute right-4 left-4 mt-4 mb-16 top-12 bottom-auto overflow-auto;
+    @apply absolute right-4 left-4 mt-4 mb-16 top-12 bottom-0 overflow-auto;
   }
   .vcb-table {
     @apply w-full ;

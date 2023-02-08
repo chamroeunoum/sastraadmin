@@ -74,6 +74,9 @@ const actions = {
   async deactivate ({ state, commit, rootState },params) {
     return await crud.update(rootState.apiServer+"/books/"+state.model.name+'/'+params.id+'/deactivate',{})
   },
+  async matra ({ state, commit, rootState },params) {
+    return await crud.read(rootState.apiServer+"/books/"+state.model.name+"/"+params.id+"/matras")
+  },
 }
 
 // mutations

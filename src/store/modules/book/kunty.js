@@ -32,25 +32,19 @@ const actions = {
         search: params.search ,
         perPage: params.perPage ,
         page: params.page ,
-        regulator_id: params.regulator_id
+        book_id: params.book_id
       }).toString()
     )
   },
   async read ({ state, commit, rootState },params) {
     return await crud.read(rootState.apiServer+"/books/"+state.model.name+"/"+params.id)
   },
-  async matika ({ state, commit, rootState },params) {
-    return await crud.read(rootState.apiServer+"/books/"+state.model.name+"/"+params.id+"/matikas")
-  },
-  async chapter ({ state, commit, rootState },params) {
-    return await crud.read(rootState.apiServer+"/books/"+state.model.name+"/"+params.id+"/chapters")
-  },
   async compact ({ state, commit, rootState },params) {
     return await crud.list(rootState.apiServer+"/books/"+state.model.name + "/compact" + ( params !== undefined ? "?" + new URLSearchParams({
       page: params.page ,
       perPage : params.perPage ,
       search: params.search ,
-      regulator_id: params.regulator_id
+      book_id: params.book_id
     }).toString(): ""))
   },
   async create ({ state, commit, rootState },params) {
@@ -71,6 +65,21 @@ const actions = {
   },
   async deactivate ({ state, commit, rootState },params) {
     return await crud.update(rootState.apiServer+"/books/"+state.model.name+'/'+params.id+'/deactivate',{})
+  },
+  async matika ({ state, commit, rootState },params) {
+    return await crud.read(rootState.apiServer+"/books/"+state.model.name+"/"+params.id+"/matikas")
+  },
+  async chapter ({ state, commit, rootState },params) {
+    return await crud.read(rootState.apiServer+"/books/"+state.model.name+"/"+params.id+"/chapters")
+  },
+  async part ({ state, commit, rootState },params) {
+    return await crud.read(rootState.apiServer+"/books/"+state.model.name+"/"+params.id+"/parts")
+  },
+  async section ({ state, commit, rootState },params) {
+    return await crud.read(rootState.apiServer+"/books/"+state.model.name+"/"+params.id+"/sections")
+  },
+  async matra ({ state, commit, rootState },params) {
+    return await crud.read(rootState.apiServer+"/books/"+state.model.name+"/"+params.id+"/matras")
   },
 }
 

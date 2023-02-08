@@ -3,19 +3,16 @@
     <div class="flex title-bar border-b border-gray-200">
         <!-- Title of crud -->
         <div class="flex-grow h-10 py-1 title relative" >
-          <Icon size="24" class="text-red-600 mr-2 absolute top-2 left-0 " >
+          <Icon size="40" class="text-red-600 mr-2 absolute top-2 left-0 " >
             <n-icon>
               <DocumentPdf24Regular />
             </n-icon>
           </Icon>
-          <div class="leading-10 font-bold ml-8 text-left" v-html="bookTitle" ></div>
+          <div class="leading-10 font-bold ml-8 text-left" >Title</div>
         </div>
       </div>
     <n-card class="w-1/2 mx-auto font-pvh text-xl" :title="'បន្ថែម ' + model.title" :bordered="false" size="small">
       <template #header-extra>
-        <n-button @click="$router.go(-1)" class="mr-4">
-          បកក្រោយ
-        </n-button>
         <n-button type="success" :disabled="btnSavingLoadingRef" @click="create()" :loading="btnSavingLoadingRef" >
           <template #icon>
             <n-icon>
@@ -127,23 +124,17 @@ export default {
   setup(){
     const model = reactive({
       name: 'matra' ,
-      title: 'មាត្រា'
+      title: 'បន្ថែមមាត្រា'
     })
     const store = useStore()
     const message = useMessage()
     const notify = useNotification()
     const route = useRoute()
-    const router = useRouter()
     const btnSavingLoadingRef = ref(false)
 
     /**
-     * Variables
+     * Variables for select
      */
-    const book = reactive({
-      id: 0 ,
-      title : '' ,
-      description: ''
-    })
     /**
      * Select value
      */
@@ -230,7 +221,7 @@ export default {
         title: record.title ,
         meaning: record.meaning ,
         active: 1 ,
-        book_id: record.book_id ,
+        book_id: route.params.id ,
         kunty_id: record.kunty_id ,
         matika_id: record.matika_id ,
         chapter_id: record.chapter_id ,
@@ -244,9 +235,11 @@ export default {
             description: 'រក្សារទុកព័ត៌មានរបស់ឯកសាររួចរាល់។' ,
             duration: 3000
           })
+          record.id = res.data.record.id
           break;
         }
         clearVariables()
+        onClose()
       }).catch( err => {
         console.log( err )
         notify.error({
@@ -260,22 +253,25 @@ export default {
      * Clear any variable from the form
      */
     function clearVariables(){
-      record.number = ""
-      record.title = ""
-      record.meaning = ""
-      record.kunty_id = 0 
-      record.matika_id = 0 
-      record.chapter_id = 0 
-      record.part_id = 0 
-      record.section_id = 0 
-      record.active = 1
+      matikas.value = []
+      chapters.value = []
+      parts.value = []
+      sections.value = []
+      record = reactive({
+        number: '' ,
+        title: '' ,
+        meaning: '' ,
+        book_id: 0 ,
+        kunty_id: 0 ,
+        matika_id: 0 ,
+        chapter_id: 0 ,
+        part_id: 0 ,
+        section_id: 0 ,
+        active: 1
+      })
       btnSavingLoadingRef.value = false
     }
     
-    const bookTitle = computed( () => {
-      return book.title != undefined && book.title != "" ? book.title : "សូមជ្រើសរើសសៀវភៅ"
-    })
-
     /**
      * Load pivot data of this model
      */
@@ -676,34 +672,11 @@ export default {
       sectionSelectLoading.value = false
     }
 
-    function getBook(){
-      store.dispatch('book/read',{
-        id: record.book_id
-      }).then( res => {
-        if( res.data.ok ){
-          book.id = res.data.record.id
-          book.title = res.data.record.title
-          book.description = res.data.record.description
-          return false
-        }
-        notify.warning({
-          title: 'អានសៀវភៅ' ,
-          description: 'មានបញ្ហាក្នុងពេលអានសៀវភៅ។'
-        })
-      }).catch( err => {
-        notify.error({
-            title: 'អានសៀវភៅ' ,
-            description: 'មានបញ្ហាក្នុងពេលអានសៀវភៅ។'
-          })
-        console.log( err )
-      })
-    }
 
     record.book_id = route.params.id > 0 ? route.params.id : 0
     /**
      * Get kunty base on book_id
      */
-    getBook()
     getKunties()
 
     return {
@@ -719,7 +692,6 @@ export default {
       chapters,
       parts,
       sections,
-      bookTitle ,
       /**
        * Computed
        */

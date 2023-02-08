@@ -35,10 +35,6 @@ const actions = {
       }).toString()
     )
   },
-  async matras ({ state, commit, rootState },params) {
-    return await crud.list(rootState.apiServer+"/"+state.model.name +"/"+params.regulator_id + "/matras?" + new URLSearchParams(params).toString()
-    )
-  },
   async read ({ state, commit, rootState },params) {
     return await crud.read(rootState.apiServer+"/"+state.model.name+"/"+params.id)
   },
@@ -48,20 +44,18 @@ const actions = {
   async matika ({ state, commit, rootState },params) {
     return await crud.read(rootState.apiServer+"/"+state.model.name+"/"+params.id+"/matikas")
   },
-  async matikasByKunty ({ state, commit, rootState },params) {
-    return await crud.read(rootState.apiServer+"/"+state.model.name+"/kunties/"+params.id+"/matikas")
+  async chapter ({ state, commit, rootState },params) {
+    return await crud.read(rootState.apiServer+"/"+state.model.name+"/"+params.id+"/chapters")
   },
-  async chaptersByMatika ({ state, commit, rootState },params) {
-    return await crud.read(rootState.apiServer+"/"+state.model.name+"/matikas/"+params.id+"/chapters")
+  async part ({ state, commit, rootState },params) {
+    return await crud.read(rootState.apiServer+"/"+state.model.name+"/"+params.id+"/parts")
   },
-  async chaptersByKunty ({ state, commit, rootState },params) {
-    return await crud.read(rootState.apiServer+"/"+state.model.name+"/kunties/"+params.id+"/chapters")
+  async section ({ state, commit, rootState },params) {
+    return await crud.read(rootState.apiServer+"/"+state.model.name+"/"+params.id+"/sections")
   },
-  async partsByChapter ({ state, commit, rootState },params) {
-    return await crud.read(rootState.apiServer+"/"+state.model.name+"/chapters/"+params.id+"/parts")
-  },
-  async sectionsByPart ({ state, commit, rootState },params) {
-    return await crud.read(rootState.apiServer+"/"+state.model.name+"/parts/"+params.id+"/sections")
+  async matras ({ state, commit, rootState },params) {
+    return await crud.list(rootState.apiServer+"/"+state.model.name +"/"+params.book_id + "/matras?" + new URLSearchParams(params).toString()
+    )
   },
   async structure ({ state, commit, rootState },params) {
     return await crud.read(rootState.apiServer+"/"+state.model.name+"/"+params.id+"/structure")

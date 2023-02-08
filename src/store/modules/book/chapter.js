@@ -41,9 +41,6 @@ const actions = {
   async read ({ state, commit, rootState },params) {
     return await crud.read(rootState.apiServer+"/books/"+state.model.name+"/"+params.id)
   },
-  async part ({ state, commit, rootState },params) {
-    return await crud.read(rootState.apiServer+"/books/"+state.model.name+"/"+params.id+"/parts")
-  },
   async compact ({ state, commit, rootState },params) {
     return await crud.list(rootState.apiServer+"/books/"+state.model.name + "/compact" + ( params !== undefined ? "?" + new URLSearchParams({
       page: params.page ,
@@ -72,6 +69,15 @@ const actions = {
   },
   async deactivate ({ state, commit, rootState },params) {
     return await crud.update(rootState.apiServer+"/books/"+state.model.name+'/'+params.id+'/deactivate',{})
+  },
+  async part ({ state, commit, rootState },params) {
+    return await crud.read(rootState.apiServer+"/books/"+state.model.name+"/"+params.id+"/parts")
+  },
+  async section ({ state, commit, rootState },params) {
+    return await crud.read(rootState.apiServer+"/books/"+state.model.name+"/"+params.id+"/sections")
+  },
+  async matra ({ state, commit, rootState },params) {
+    return await crud.read(rootState.apiServer+"/books/"+state.model.name+"/"+params.id+"/matras")
   },
 }
 

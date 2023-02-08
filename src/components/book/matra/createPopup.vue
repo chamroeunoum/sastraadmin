@@ -1,10 +1,10 @@
 <template>
   <!-- Form edit account -->
-    <div class="vcb-pop-update font-ktr">
-      <n-modal v-model:show="show" :on-after-enter="clearSelectControls" :on-after-leave="onClose" transform-origin="center">
-        <n-card class="w-1/2 font-pvh text-xl" :title="'កែប្រែ ' + model.title" :bordered="false" size="small">
+    <div class="vcb-pop-create font-ktr">
+      <n-modal v-model:show="show" :on-after-leave="onClose" :on-after-enter="clearVariables" transform-origin="center">
+        <n-card class="w-1/2 font-pvh text-xl" :title="'បន្ថែម ' + model.title" :bordered="false" size="small">
           <template #header-extra>
-            <n-button type="success" :disabled="btnSavingLoadingRef" @click="update()" :loading="btnSavingLoadingRef" >
+            <n-button type="success" :disabled="btnSavingLoadingRef" @click="create()" :loading="btnSavingLoadingRef" >
               <template #icon>
                 <n-icon>
                   <Save20Regular />
@@ -14,7 +14,7 @@
             </n-button>
           </template>
           <!-- Form edit account -->
-          <div class="crud-update-form w-full border-t">
+          <div class="crud-create-form w-full border-t">
             <div class=" mx-auto p-4 flex-wrap">
               <div class="crud-form-panel w-full flex flex-wrap ">
                 <n-form 
@@ -32,25 +32,8 @@
                     <n-input v-model:value="record.title" placeholder="ចំណងជើង" />
                   </n-form-item>
                   <n-form-item label="អត្ថន័យ" path="meaning" class="w-4/5 mr-8" >
-                    <editor
-                      api-key="s8c2l98dqq44djzw36zygeqqlxnovz6kb0ql41tcirwvxgh5"
-                      :init="{
-                        width: '100%' ,
-                        menubar: false ,
-                        plugins: [
-                          'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                          'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                          'insertdatetime', 'media', 'table', 'help', 'wordcount'
-                        ],
-                        toolbar: 'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl',
-                        quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
-                        toolbar_mode: 'sliding',
-                        contextmenu: 'link image table',
-                      }"
-                      v-model="record.meaning"
-                    />
+                    <n-input type="textarea" v-model:value="record.meaning" placeholder="អត្ថន័យ" />
                   </n-form-item>
-                  <div class="current_hierachy text-xs ">{{ matraHierachy }}</div>
                   <n-form-item v-if="kunties" label="គន្ថី" path="kunthy" class="w-4/5 mr-8" >
                     <n-select
                       v-model:value="kunty"
@@ -116,13 +99,11 @@ import { useStore } from 'vuex'
 import { useMessage, useNotification } from 'naive-ui'
 import { Save20Regular } from '@vicons/fluent'
 import { DocumentPdf24Regular } from '@vicons/fluent'
-import Editor from '@tinymce/tinymce-vue'
 
 export default {
   components: {
     Save20Regular ,
-    DocumentPdf24Regular,
-    'editor' : Editor
+    DocumentPdf24Regular 
   },
   props: {
     model: {
@@ -135,10 +116,73 @@ export default {
         })
       },
       // validator: (val) => {}
-    } , 
+    } ,
+    bookId: {
+      type: Number ,
+      required: true ,
+      default: () => {
+        return ref(0)
+      }
+    },
+    kunties: {
+      type: Array ,
+      required: true ,
+      default: () => {
+        return ref([])
+      }
+    },
+    matikas: {
+      type: Array ,
+      required: true ,
+      default: () => {
+        return ref([])
+      }
+    },
+    chapters: {
+      type: Array ,
+      required: true ,
+      default: () => {
+        return ref([])
+      }
+    },
+    parts: {
+      type: Array ,
+      required: true ,
+      default: () => {
+        return ref([])
+      }
+    },
+    sections: {
+      type: Array ,
+      required: true ,
+      default: () => {
+        return ref([])
+      }
+    },
     record: {
       type: Object ,
-      required: true
+      required: false ,
+      default: () => {
+        return reactive({
+          id: 0 ,
+          number: '' ,
+          title: '' ,
+          meaning: '' ,
+          active: 1 ,
+          book_id: 0 ,
+          kunty_id: 0 ,
+          matika_id: 0 ,
+          chapter_id: 0 ,
+          part_id: 0 ,
+          section_id: 0
+        })
+      },
+      // validator: (val) => {
+      //   for(var field in ['id','username','firstname','lastname','email','phone','password','active'] ){
+      //     if( !val.hasOwnProperty(field) ) return false
+      //   }
+      //   return true 
+      // }
     },
     show: {
       type: Boolean ,
@@ -171,27 +215,8 @@ export default {
     const section = ref(null)
 
     /**
-     * Select options
-     */
-    const kunties = ref([])
-    const matikas = ref([]) 
-    const chapters = ref([])
-    const parts = ref([])
-    const sections = ref([])
-
-    /**
      * Variables
      */    
-
-    const matraHierachy = computed(() => {
-      return ( props.record.book != null ? props.record.book.title + " > " : "" ) +
-      ( props.record.kunty != null ? props.record.kunty.number + ' ៖ ' + props.record.kunty.title : "" ) +
-      ( props.record.matika != null ? " > " + props.record.matika.number + ' ៖ ' + props.record.matika.title : "" ) +
-      ( props.record.chapter != null ? " > " + props.record.chapter.number + ' ៖ ' + props.record.chapter.title : "" ) +
-      ( props.record.part != null ? " > " + props.record.part.number + ' ៖ ' + props.record.part.title : "" ) +
-      ( props.record.section != null ? " > " + props.record.section.number + ' ៖ ' + props.record.section.title : "" )
-    })
-
     const rules = {
         number: {
           required: true,
@@ -210,121 +235,7 @@ export default {
         }
     }
     
-    /**
-     * Some of the book which is the type of law does not has kunty but matika
-     * So, we need to check this first before preccedding
-     */
-    
-    function readKunty(bookId) {
-      if( bookId == null || bookId <= 0 ) return false
-      store.dispatch('book/kunty',{
-        id: bookId
-      }).then( res => {
-        if( res.data.ok === true ){
-          console.log( res.data.records )
-          kunties.value = res.data.records.map( record => { return { label: record.number + "៖ " + record.title , value: record.id } } )
-        }else{
-          notify.error({
-            title: "គន្ថី" ,
-            description: "មានបញ្ហាក្នុងការអានគន្ថី។" ,
-            duration: 3000
-          })
-        }
-      })  
-    }
-    
-    function readMatikas(kuntyId) {
-      if( kuntyId == null || kuntyId <= 0 ) return false
-      store.dispatch('book/matikasByKunty',{
-        id: kuntyId
-      }).then( res => {
-        if( res.data.ok == true ){
-          if( res.data.records.length > 0 ){
-            matikas.value = res.data.records.map( record => { return { label: record.number + "៖ " + record.title , value: record.id } } )
-          }else{
-            // Kunty might does not have any matika, try to read chapters
-            readChaptersByKunty(kuntyId)
-          }
-        }else{
-          notify.error({
-            title: "មាតិកា" ,
-            description: "មានបញ្ហាក្នុងការអានមាតិកា។" ,
-            duration: 3000
-          })
-        }
-      })
-    }
-
-    function readChaptersByKunty(kuntyId){
-      if( kuntyId == null || kuntyId <= 0 ) return false
-      store.dispatch('book/chaptersByKunty',{
-        id: kuntyId
-      }).then( res => {
-        if( res.data.ok == true ){
-          chapters.value = res.data.records.map( record => { return { label: record.number + "៖ " + record.title , value: record.id } } )
-        }else{
-          notify.error({
-            title: "ជំពូក" ,
-            description: "មានបញ្ហាក្នុងការអានជំពូក។" ,
-            duration: 3000
-          })
-        }
-      })
-    }
-
-    function readChaptersByMatika(matikaId){
-      if( matikaId == null || matikaId <= 0 ) return false
-      store.dispatch('book/chaptersByMatika',{
-        id: matikaId
-      }).then( res => {
-        if( res.data.ok == true ){
-          chapters.value = res.data.records.map( record => { return { label: record.number + "៖ " + record.title , value: record.id } } )
-        }else{
-          notify.error({
-            title: "ជំពូក" ,
-            description: "មានបញ្ហាក្នុងការអានជំពូក។" ,
-            duration: 3000
-          })
-        }
-      })
-    }
-
-    function readParts(chapterId){
-      if( chapterId == null || chapterId <= 0 ) return false
-      store.dispatch('book/partsByChapter',{
-        id: chapterId
-      }).then( res => {
-        if( res.data.ok == true ){
-          parts.value = res.data.records.map( record => { return { label: record.number + "៖ " + record.title , value: record.id } } )
-        }else{
-          notify.error({
-            title: "ផ្នែក" ,
-            description: "មានបញ្ហាក្នុងការអានផ្នែក។" ,
-            duration: 3000
-          })
-        }
-      })
-    }
-    
-    function readSections(partId){
-      if( partId == null || partId <= 0 ) return false
-      store.dispatch('book/sectionsByPart',{
-        id: partId
-      }).then( res => {
-        if( res.data.ok == true ){
-          sections.value = res.data.records.map( record => { return { label: record.number + "៖ " + record.title , value: record.id } } )
-        }else{
-          notify.error({
-            title: "គន្ថី" ,
-            description: "មានបញ្ហាក្នុងការអានគន្ថី។" ,
-            duration: 3000
-          })
-        }
-      })
-
-    }
-
-    function update(){
+    function create(){
       if( props.record.number == "" ){
         notify.warning({
           'title' : 'ពិនិត្យព័ត៌មាន' ,
@@ -359,7 +270,7 @@ export default {
       }
 
       /**
-       * Saving information of the book
+       * Saving information of the regulator
        */
       notify.info({
         title: 'រក្សារទុកព័ត៌មាន' ,
@@ -367,18 +278,18 @@ export default {
         duration: 3000
       })
       btnSavingLoadingRef.value = true
-      store.dispatch( props.model.name+'/update',{
-        id: props.record.id ,
+      store.dispatch( props.model.name+'/create',{
+        // id: props.record.id ,
         number: props.record.number.toString().padStart(4,'0') ,
         title: props.record.title ,
         meaning: props.record.meaning ,
         active: 1 ,
         book_id: route.params.id ,
-        kunty_id: kunty.value > 0 ? kunty.value : 0 ,
-        matika_id: matika.value > 0 ? matika.value : 0 ,
-        chapter_id: chapter.value > 0 ? chapter.value : 0 ,
-        part_id: part.value > 0 ? part.value : 0 ,
-        section_id: section.value > 0 ? section.value : 0 ,
+        kunty_id: props.record.kunty_id ,
+        matika_id: props.record.matika_id ,
+        chapter_id: props.record.chapter_id ,
+        part_id: props.record.part_id ,
+        section_id: props.record.section_id
       }).then( res => {
         switch( res.status ){
           case 200 : 
@@ -416,46 +327,28 @@ export default {
       section.value = null
       btnSavingLoadingRef.value = false
     }
-    function clearSelectControls(){
-      kunty.value = null
-      matika.value = null
-      chapter.value = null
-      part.value = null
-      section.value = null
-    }
-    // Read kunty
-    readKunty(route.params.id)
 
     return {
       /**
        * Variables
        */
-      /** The current editing record */
       rules ,
-      kunties ,
-      matikas ,
-      chapters ,
-      parts ,
-      sections ,
       btnSavingLoadingRef ,
       kunty ,
       matika ,
       chapter ,
       part ,
       section ,
-      matraHierachy ,
       /**
        * Functions
        */
-      update ,
-      readKunty ,
-      readMatikas ,
-      readChaptersByMatika ,
-      readChaptersByKunty ,
-      readParts ,
-      readSections ,
-      clearVariables ,
-      clearSelectControls
+      create ,
+      clearVariables
+    }
+  },
+  mounted(){
+    if( this.$props.bookId !== undefined && this.$props.bookId > 0 ) {
+      this.readKunty(this.$props.bookId)
     }
   }
 }

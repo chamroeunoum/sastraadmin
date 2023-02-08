@@ -2,7 +2,7 @@
   <div class="flex justify-center">
     <div class="w-full mx-8 sm:w-1/2 md:w-96 lg:w-96 xl:96 p-8 mt-24 border rounded">
       <div class="w-28 mx-auto my-4">
-        <img src="./../../assets/logo.png" alt="SASTRA Logo" class="w-full" >
+        <img src="/src/assets/img/logo.png" alt="SASTRA Logo" class="w-full" >
       </div>
       <div class="w-full mx-auto mt-4 mb-8 text-lg ">
         កម្រងឯកសារច្បាប់ខ្មែរ

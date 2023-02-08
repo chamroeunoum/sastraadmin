@@ -42,8 +42,13 @@ import UserDetail from './components/user/detail.vue'
  */
  import MatraCrud from './components/book/matra/index.vue'
  import MatraListCrud from './components/book/matra/list.vue'
- import MatraCreateCrud from './components/matra/create.vue'
- import MatraUpdateCrud from './components/matra/update.vue'
+ import MatraCreateCrud from './components/book/matra/create.vue'
+ import MatraUpdateCrud from './components/book/matra/update.vue'
+ import KuntyCreateCrud from './components/book/createKunty.vue'
+ import MatikaCreateCrud from './components/book/createMatika.vue'
+ import ChapterCreateCrud from './components/book/createChapter.vue'
+ import PartCreateCrud from './components/book/createPart.vue'
+ import SectionCreateCrud from './components/book/createSection.vue'
 
 /**
  * Client Components
@@ -211,11 +216,41 @@ if( !isAdmin() ){
                     path: ':id/matra' ,
                     component: MatraListCrud,
                 },
-                // {
-                //     name: "BookUpdate" ,
-                //     path: 'update' ,
-                //     component: BookUpdateCrud
-                // }
+                {
+                    name: "MatraOfBookCreate" ,
+                    path: ':id/matra/create' ,
+                    component: MatraCreateCrud
+                },
+                {
+                    name: "MatraOfBookUpdate" ,
+                    path: ':id/matra/update' ,
+                    component: MatraUpdateCrud
+                },
+                {
+                    name: "CreateKuntyOfBook" ,
+                    path: ':id/matra/createKunty' ,
+                    component: KuntyCreateCrud
+                },
+                {
+                    name: "CreateMatikaOfBook" ,
+                    path: ':id/matra/createMatika' ,
+                    component: MatikaCreateCrud
+                },
+                {
+                    name: "CreateChapterOfBook" ,
+                    path: ':id/matra/createChapter' ,
+                    component: ChapterCreateCrud
+                },
+                {
+                    name: "CreatePartOfBook" ,
+                    path: ':id/matra/createPart' ,
+                    component: PartCreateCrud
+                },
+                {
+                    name: "CreateSectionOfBook" ,
+                    path: ':id/matra/createSection' ,
+                    component: SectionCreateCrud
+                },
             ]
         },
         /**
@@ -256,33 +291,34 @@ if( !isAdmin() ){
         /**
          * Matra Section
          */
-        {
-            name: 'Matra' ,
-            path: '/matra',
-            component: MatraCrud ,
-            meta: { 
-                transition: 'slide-right' ,
-                requiresAuth: true,
-                is_admin : true
-            },
-            children: [
-                {
-                    name: "MatraList" ,
-                    path: '' ,
-                    component: MatraListCrud
-                },
-                // {
-                //     name: "BookCreate" ,
-                //     path: 'create' ,
-                //     component: BookCreateCrud
-                // },
-                // {
-                //     name: "BookUpdate" ,
-                //     path: 'update' ,
-                //     component: BookUpdateCrud
-                // }
-            ]
-        }],
+        // {
+        //     name: 'Matra' ,
+        //     path: '/matra',
+        //     component: MatraCrud ,
+        //     meta: { 
+        //         transition: 'slide-right' ,
+        //         requiresAuth: true,
+        //         is_admin : true
+        //     },
+        //     children: [
+        //         {
+        //             name: "MatraList" ,
+        //             path: '' ,
+        //             component: MatraListCrud
+        //         },
+        //         {
+        //             name: "MatraCreate" ,
+        //             path: 'create' ,
+        //             component: MatraCreateCrud
+        //         },
+        //         {
+        //             name: "MatraUpdate" ,
+        //             path: 'update' ,
+        //             component: MatraUpdateCrud
+        //         }
+        //     ]
+        // }
+    ],
     }]
 }else{
     routes = [{ 

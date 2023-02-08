@@ -65,9 +65,12 @@
             <n-icon size="22" :class="'cursor-pointer ' + (record.active == 1 ? ' text-green-600 ' : ' text-gray-500 ') " @click="activateRegulator(record)" :title="record.active == 1 ? 'កំពុងដំណើរការ' : 'បានបិទដំណើរការ' " >
               <IosCheckmarkCircleOutline />
             </n-icon>
-            <!-- <n-icon size="30" :class="'cursor-pointer ' + (record.pdf == 1 ? ' text-green-500 ' : ' text-gray-500 ') " @click="activateRegulator(record)" :title="record.active == 1 ? 'គណនីនេះកំពុងបើកតំណើរការ' : 'គណនីនេះកំពុងត្រូវបានបិទមិនអាចប្រើប្រាស់បាន' " >
+            <n-icon size="22" :class="'cursor-pointer ' + (record.pdf == 1 ? ' text-green-500 ' : ' text-gray-500 ') " >
               <DocumentPdf24Regular />
-            </n-icon> -->
+            </n-icon>
+            <n-icon size="22" :class="'cursor-pointer ' + (record.pdf == 1 ? ' text-green-500 ' : ' text-gray-500 ') " @click="$router.push('/book/'+record.id+'/matra')" >
+              <MenuBookRound />
+            </n-icon>
           </td>
         </tr>
       </table>
@@ -126,6 +129,7 @@ import { Icon } from '@vicons/utils'
 import { IosCheckmarkCircleOutline, IosRefresh } from '@vicons/ionicons4'
 import { TrashOutline, CloseCircleOutline } from '@vicons/ionicons5'
 import { useDialog, useMessage, useNotification } from 'naive-ui'
+import { MenuBookRound } from '@vicons/material'
 import { Edit20Regular, Key16Regular, Save20Regular, Add20Regular, Search20Regular , ContactCard28Regular, DocumentPdf24Regular } from '@vicons/fluent'
 /**
  * CRUD component form
@@ -139,6 +143,7 @@ export default {
     Vue3Barcode,
     Switcher,
     Add20Regular ,
+    MenuBookRound ,
     DataStructured,
     Icon,
     IosCheckmarkCircleOutline,
